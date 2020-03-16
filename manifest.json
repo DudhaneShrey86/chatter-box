@@ -1,0 +1,37 @@
+{
+  "name": "Chatter Box",
+  "short_name": "CBox",
+  "start_url": "./index.php",
+  "display": "standalone",
+  "background_color": "#6f4fc4",
+  "theme_color": "#5936b5",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./icon512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "./icon256.png",
+      "type": "image/png",
+      "sizes": "256x256"
+    },
+    {
+      "src": "./icon128.png",
+      "type": "image/png",
+      "sizes": "128x128"
+    },
+    {
+      "src": "./icon96.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "./icon64.png",
+      "type": "image/png",
+      "sizes": "64x64"
+    }
+  ]
+
+}
