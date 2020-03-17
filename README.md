@@ -10,7 +10,7 @@ Steps to use as a progressive web app on the home screeb
 3. This will install the app right onto your homescreen.
 4. Open it and start using it!
 
-###Using the MEME button
+### Using the MEME button
 1. Type in some context of the meme
 2. Click on the button, it will show top 20 results from google
 3. Click on the images to send it
