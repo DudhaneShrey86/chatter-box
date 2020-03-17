@@ -25,6 +25,12 @@ var listening = 0;
 var selectedmessagesarray = [];
 var timeoutID;
 var stoplistening;
+var smallloader = '<div class="smallloader"><span></span></div>';
+var imgobject;
+var imgarray = [];
+var imgstr = "";
+
+
 //////////////////////logging in user/////////////////////
 function validateregisteration(event){
   event.preventDefault();
@@ -181,12 +187,6 @@ function backtomainfromchat(){
   stoplistening();
 }
 
-function backtomainfromsettings(){
-  $('#settingsdiv').removeClass('bring').addClass('pushtoright');
-  $('#maindiv').addClass('bring').removeClass('pushtoleft');
-  /////////////will have to change it/////////////////
-}
-
 function sendmessage(){
   var v = $('#message').val();
   var t = $('.chatheader h1').text();
@@ -207,10 +207,48 @@ function sendmessage(){
       });
     }
   }
-  $('#message').val('');
+  $('#message').val('').focus();
 }
 function browsememes(){
+  var v = $('#message').val();
+  var memediv = $('#memediv');
+  if(memediv.hasClass('showmemes')){
+    memediv.removeClass('showmemes');
+    memediv.empty();
+  }
+  else if(v != ''){
+    memediv.addClass('showmemes');
+    appendtodiv(memediv, smallloader);
+    xhttp.open('GET', './getmemes.php?search='+v, true);
+    xhttp.send();
+    xhttp.onreadystatechange = function(){
+      if(this.status == 200 && this.readyState == 4){
+        removefromdiv(memediv);
+        imgobject = JSON.parse(this.responseText);
+        imgarray = imgobject.images;
+        imgarray.forEach((item)=>{
+          imgstr = '<img src="'+item.img+'" class="meme" onclick="sendmeme($(this))">';
+          appendtodiv(memediv, imgstr);
+        });
+      }
+    };
+  }
+}
+function appendtodiv(memediv, toappend){
+  memediv.append(toappend);
+}
+function removefromdiv(memediv){
+  memediv.find('.smallloader').remove();
+}
+function sendmeme(t){
+  imgstr = '<img src="'+t.attr('src')+'">';
+  $('#message').val(imgstr);
+  setTimeout(sendmessage, 50);
+  $('#memediv').removeClass('showmemes');
+}
 
+function openchatsettings(){
+  $('#chatoptions').addClass('sho');
 }
 
 function opencontextmenu(t){
@@ -299,10 +337,11 @@ function opensettings(){
   $('#settingsdiv').addClass('bring').removeClass('pushtoright');
 }
 
-function openchatsettings(){
-  $('#chatoptions').addClass('sho');
+function backtomainfromsettings(){
+  $('#settingsdiv').removeClass('bring').addClass('pushtoright');
+  $('#maindiv').addClass('bring').removeClass('pushtoleft');
+  /////////////will have to change it/////////////////
 }
-
 //////////////////////settings options///////////////////////
 function logoutuser(){
   Swal.fire({

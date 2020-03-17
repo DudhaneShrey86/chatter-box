@@ -20,6 +20,7 @@ foreach ($trows as $row) {
     $a = $data->find('a', 0);
     $img = $a->find('img', 0);
     $res .= '{"img": "'.$img->src.'"}';
+    echo $img;
   }
   $res .= ']}';
 }

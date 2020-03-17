@@ -52,6 +52,9 @@
         </div>
       </div>
       <div id="chatdiv" class="appdivs pushtoright">
+        <div id="memediv">
+          
+        </div>
         <header class="chatheader">
           <img src="./images/arrow.png" alt="" onclick="backtomainfromchat()">
           <div>

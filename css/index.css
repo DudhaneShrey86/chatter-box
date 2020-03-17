@@ -56,6 +56,27 @@ body{
   75%{transform: rotate(270deg);}
   100%{transform: rotate(360deg);}
 }
+
+.smallloader{
+  background: red;
+  width: 90px;
+  height: 100px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--secondary-color);
+  box-shadow: 2px 2px 5px var(--primary-color2), -2px -2px 5px var(--primary-color2);
+}
+.smallloader span{
+
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-top: 2px solid var(--light-color);
+  border-radius: 50%;
+  animation: loadrotate 1s infinite;
+}
 /**************************LOADER END**********************/
 .appdivs{
   min-height: 100vh;
@@ -96,6 +117,7 @@ body{
   min-width: 250px;
   box-sizing: border-box;
   text-align: center;
+  color: var(--secondary-color);
 }
 #loginformdiv h2{
   margin: 5px;
@@ -396,6 +418,37 @@ header h1{
 #sendmessageicon{
   transform: rotateZ(90deg);
 }
+#memediv{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--primary-color3);
+  padding: 5px;
+  border-radius: 5px;
+  display: none;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-auto-rows: minmax(min-content, max-content);
+  max-width: 90%;
+  z-index: 10;
+  max-height: 70%;
+  overflow: auto;
+  box-sizing: border-box;
+}
+#memediv.showmemes{
+  display: grid;
+}
+.meme{
+  width: 90px;
+  max-height: 150px;
+  min-height: 100px;
+  margin: 2px;
+  border: 0px !important;
+  border-radius: 5px;
+  box-sizing: border-box;
+  background: var(--secondary-color);
+  box-shadow: 2px 2px 5px var(--primary-color2), -2px -2px 5px var(--primary-color2);
+}
 /*********************SETTINGS*******************/
 .settingsh1{
   margin: 8px 0px;
@@ -440,8 +493,8 @@ header h1{
   right: 0;
   bottom: 0;
   background-color: var(--border-color2);
-  -webkit-transition: .3s;
-  transition: .3s;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
   border-radius: 20px;
 }
 
