@@ -18,6 +18,9 @@ body{
   font-family: 'Roboto', sans-serif;
   background: var(--background-color);
 }
+#lowerwidth{
+  display: none;
+}
 /**************************LOADER**********************/
 #loadercontainer{
   position: relative;
@@ -323,7 +326,7 @@ header h1{
   background: transparent !important;
 }
 #chatcontentcontainer{
-  overflow: scroll;
+  overflow: auto;
   background: var(--light-bg-color);
 }
 #chatcontent{
@@ -523,4 +526,19 @@ input:checked + .slider:before {
   -webkit-transform: translateX(14px);
   -ms-transform: translateX(14px);
   transform: translateX(14px);
+}
+
+/****************DESKTOPS*****************/
+@media screen and (min-width: 768px) {
+  #container{
+    display: none;
+    overflow: hidden;
+  }
+  #lowerwidth{
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 }

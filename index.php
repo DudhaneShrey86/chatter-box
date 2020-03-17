@@ -6,6 +6,7 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatter Box</title>
     <?php include("./links.php"); ?>
   </head>
@@ -53,7 +54,7 @@
       </div>
       <div id="chatdiv" class="appdivs pushtoright">
         <div id="memediv">
-          
+
         </div>
         <header class="chatheader">
           <img src="./images/arrow.png" alt="" onclick="backtomainfromchat()">
@@ -118,6 +119,9 @@
           </div>
         </div>
       </div>
+    </div>
+    <div id="lowerwidth">
+      <h2>Please reduce your screen width to 768px or below, as this web-app is made only for mobiles for now...</h2>
     </div>
   </body>
 </html>
