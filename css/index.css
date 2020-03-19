@@ -236,6 +236,9 @@ header h1{
   grid-template-columns: 60px auto 50px;
   font-size: 0.9em;
   z-index: 3;
+  position: sticky;
+  top: 0;
+  left: 0;
 }
 .chatheader img, .settingsheader img{
   width: 20px;
@@ -333,6 +336,9 @@ header h1{
   height: auto;
   padding: 10px;
 }
+#chatcontent img{
+  border-radius: 5px;
+}
 .datedivs{
   text-align: center;
   padding: 2px;
@@ -378,7 +384,7 @@ header h1{
 }
 #chatmessagediv{
   position: sticky;
-  bottom: 0;
+  top: 0;
   left: 0;
   padding: 1px;
   display: grid;
