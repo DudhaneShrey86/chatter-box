@@ -191,6 +191,37 @@ header h1{
 #maincontent p{
   margin: 0;
 }
+#searchusers{
+  position: sticky;
+  top: 0;
+  margin: 10px 0;
+  padding: 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: 1px solid var(--border-color1);
+  background: var(--light-bg-color);
+}
+#searcheduser{
+  display: inline-block;
+  width: auto;
+  border: 0;
+  padding: 10px;
+  background: transparent;
+  flex-grow: 1;
+  outline: none !important;
+  font-size: 1em;
+  color: var(--text-color);
+}
+
+#searchusers img{
+  flex-grow: 0;
+  margin: auto;
+  width: 25px;
+  height: 25px;
+  margin: 0 9px;
+  filter: invert(70%);
+}
 .usercard{
   border-top: 1px solid var(--border-color1);
   padding: 10px 5px;

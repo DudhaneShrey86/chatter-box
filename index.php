@@ -49,7 +49,10 @@
           </div>
         </header>
         <div id="maincontent">
-
+          <div id="searchusers">
+            <input type="text" id="searcheduser" placeholder="Search users...">
+            <span onclick="searchuser()"><img src="./images/search.png" alt="Search"></span>
+          </div>
         </div>
       </div>
       <div id="chatdiv" class="appdivs pushtoright">

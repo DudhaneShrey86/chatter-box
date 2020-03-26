@@ -3,6 +3,8 @@
 <link href="./css/roboto.css" rel="stylesheet">
 <link rel="manifest" href="./manifest.json">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="A basic chat web-app">
+<meta name="theme-color" content="#5936b5">
 <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-firestore.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.9.3/firebase-analytics.js"></script>
@@ -27,3 +29,4 @@
 <script src="./js/index.js" charset="utf-8"></script>
 <script src="./js/sweetalert.js"></script>
 <script src="./js/clickable.js"></script>
+<script src="./js/app.js" charset="utf-8"></script>

@@ -25,11 +25,12 @@ var listening = 0;
 var selectedmessagesarray = [];
 var timeoutID;
 var stoplistening;
+var stoplisteningusers;
 var smallloader = '<div class="smallloader"><span></span></div>';
 var imgobject;
 var imgarray = [];
 var imgstr = "";
-
+var unloaded = false;
 
 //////////////////////logging in user/////////////////////
 function validateregisteration(event){
@@ -40,7 +41,6 @@ function validateregisteration(event){
     const userref = db.collection('users');
     userref.where('username', '==', v).get().then((snapshot) => {
       hideloader();
-      console.log(snapshot.empty);
       if(!snapshot.empty){
         Swal.fire({
           text: 'Username already exists!',
@@ -79,15 +79,15 @@ function logout(){
   window.location.replace("./logout.php");
 }
 
-function appendusers(){
-  db.collection('users').get().then((snapshot) => {
-    snapshot.forEach((doc) => {
-      if(doc.data().username != user.value){
-        appendtheuser(doc);
-      }
-    })
-  });
-}
+// function appendusers(){
+//   db.collection('users').get().then((snapshot) => {
+//     snapshot.forEach((doc) => {
+//       if(doc.data().username != user.value){
+//         appendtheuser(doc);
+//       }
+//     })
+//   });
+// }
 
 function appendtheuser(doc){
   var str = '<div class="usercard" id="'+doc.data().username+'" onclick="chatwithuser($(this))"><p class="chatuser"><span class="userlogo">'+doc.data().username.slice(0, 1).toUpperCase()+'</span><span class="userusername">'+doc.data().username+'</span>';
@@ -100,7 +100,31 @@ function appendtheuser(doc){
   $('#maincontent').append(str);
 }
 
+function changeuseronlinestatus(doc){
+  if(doc.data().online == true){
+    $('#'+doc.data().username).find('.useronline').addClass('active');
+  }
+  else{
+    $('#'+doc.data().username).find('.useronline').removeClass('active');
+  }
+}
+
+function removeuser(docid){
+  $('#'+docid).remove();
+}
+
+function searchuser(){
+  var u = $('#searcheduser').val();
+  $('.usercard').hide();
+  $('.usercard').each(function(){
+    var user = $(this).find('.userusername').text();
+    if(user.search(u) != -1){
+      $(this).show();
+    }
+  });
+}
 function chatwithuser(t){
+  $('#searcheduser').val('');
   oldmsgdate = "";
   $('#chatcontent').empty();
   userto = t.attr('id');
@@ -121,9 +145,9 @@ function chatwithuser(t){
         chatid = doc.id;
       });
       hideloader();
-      //getchats(chatid);
     }
     listenmessages(chatid);
+    listentheuser(userto);
   });
 }
 async function createrandno(ref, str1){
@@ -143,18 +167,8 @@ async function createrandno(ref, str1){
         participants: str1
       });
       chatid = res;
-      //getchats(chatid);
     }
   });
-}
-
-function getchats(i){
-  db.collection('chats').where('chatID', '==', i).orderBy('time').get().then((snapshot)=>{
-    snapshot.forEach((doc)=>{
-      appendchats(doc);
-    })
-  });
-  hideloader();
 }
 
 function appendchats(doc){
@@ -185,6 +199,7 @@ function backtomainfromchat(){
   /////////////will have to change it/////////////////
   $('#chatcontent').empty();
   stoplistening();
+  stoplisteningtheuser();
 }
 
 function sendmessage(){
@@ -310,8 +325,9 @@ function clearchat(){
     });
   });
 }
+////////////// listening to user's message changes///////////////
 function listenmessages(chatid){
-    stoplistening = db.collection('chats').where('chatID', '==', chatid).orderBy('time').onSnapshot((snapshot) => {
+  stoplistening = db.collection('chats').where('chatID', '==', chatid).orderBy('time').onSnapshot((snapshot) => {
     let changes = snapshot.docChanges();
     changes.forEach((change) => {
       if(change.type == "added"){
@@ -331,6 +347,44 @@ function listenmessages(chatid){
   });
 }
 
+////////////// listening to user's online status changes///////////////
+function listentheuser(userto){
+  stoplisteningtheuser = db.collection('users').where('username', '==', userto).onSnapshot((snapshot)=>{
+    let changes = snapshot.docChanges();
+    changes.forEach((change)=>{
+      if(change.type == "modified" || change.type == "added"){
+        if(change.doc.data().online == true){
+          $('.checkonline').text('online');
+        }
+        else{
+          var ls = change.doc.data().lastseen;
+          var lsstring = new Date(ls.toDate()).toLocaleString();
+          $('.checkonline').text(lsstring);
+        }
+      }
+    });
+  });
+}
+////////////// listening to user changes in chat list///////////////
+function listenusers(){
+  stoplisteningusers = db.collection('users').onSnapshot((snapshot)=>{
+    let changes = snapshot.docChanges();
+    changes.forEach((change)=>{
+      if(change.doc.data().username != user.value){
+        if(change.type == "added"){
+          appendtheuser(change.doc);
+        }
+        else if(change.type == "modified"){
+          changeuseronlinestatus(change.doc);
+        }
+        else if(change.type == "removed"){
+          var muid = change.doc.data().username;
+          removeuser(muid);
+        }
+      }
+    });
+  });
+}
 /////////////////////SETTINGS//////////////////////////
 function opensettings(){
   $('#maindiv').removeClass('bring').addClass('pushtoleft');
@@ -360,12 +414,12 @@ function logoutuser(){
       });
     }
   }).then((result)=>{
-    console.log(user.value);
     if(result.value){
       Swal.fire({
         text: 'Your account has been deleted! You will now be redirected to registeration page',
         icon: 'success'
       }).then(()=>{
+        stoplisteningusers();
         logout();
       });
     }
@@ -374,7 +428,6 @@ function logoutuser(){
 
 function checkmode(t){
   var mode = '';
-  console.log(t.checked);
   if(t.checked){
     $('#darkcss').attr('href', './css/dark.css');
     mode = 'dark';
@@ -386,6 +439,45 @@ function checkmode(t){
   xhttp.open('GET', 'setmode.php?mode='+mode, true);
   xhttp.send();
 }
+
+async function updatelastseen(){
+  // if(!unloaded){
+    // var ti = firebase.firestore.Timestamp.now();
+    // db.collection('users').where('username', '==', user.value).get().then((snapshot)=>{
+    //   snapshot.forEach((doc)=>{
+    //     db.collection('users').doc(doc.id).set({
+    //       lastseen: ti,
+    //       online: false
+    //     }, { merge: true });
+    //   });
+    // });
+  // }
+  // if(!unloaded){
+  //   $.ajax({
+  //     type: 'GET',
+  //     async: false,
+  //     url: 'http://localhost:8080/chat/updatelastseen.php?user='+user.value,
+  //     success: function(){
+  //       unloaded = true;
+  //     },
+  //     timeout: 5000
+  //   });
+  // }
+  // let result = await makeRequest("GET", "http://localhost:8080/chat/updatelastseen.php?user="+user.value);
+  // console.log(result);
+}
+
+function setonline(){
+  db.collection('users').where('username', '==', user.value).get().then((snapshot)=>{
+    snapshot.forEach((doc)=>{
+      db.collection('users').doc(doc.id).set({
+        online: true
+      }, { merge: true });
+    });
+  });
+}
+
+
 ///////////////////////////Document functions///////////////////
 $(document).ready(function(){
   var user = $('#user').val();
@@ -401,7 +493,18 @@ $(document).ready(function(){
       sendmessage();
     }
   });
+  $('#searcheduser').keyup(function(event){
+    if(event.keyCode == 13){
+      $(this).blur();
+      searchuser();
+    }
+  });
   checkmode(document.getElementById('themecheckbox'));
-  appendusers();
+  listenusers();
   setchatheight();
+  //$(window).on('beforeunload', updatelastseen);
+  //$(window).on('unload', updatelastseen);
+  window.onload = function(){
+    //setonline();
+  }
 });
